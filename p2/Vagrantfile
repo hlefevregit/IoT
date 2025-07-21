@@ -1,0 +1,19 @@
+RAM = 1024
+CPUS = 2
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "generic/ubuntu2004"
+
+    config.vm.synced_folder "./config", "/vagrant/config", type: "rsync"
+
+    config.vm.define "hulefevrS" do |node|
+        node.vm.hostname = "hulefevrS"
+        node.vm.network "private_network", ip: "192.168.56.110"
+        node.vm.provider :libvirt do |lv|
+            lv.memory = RAM
+            lv.cpus = CPUS
+        end
+        node.vm.provision "shell", path: "scripts/master.sh"
+
+    end
+end

@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-two-html
+data:
+  index.html: |
+    <html>
+      <head>
+        <title>App Two</title>
+      </head>
+      <body>
+        <h1>Welcome to App Two</h1>
+        <p>This is a simple web application running on Kubernetes.</p>
+      </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-two-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app-two
+  template:
+    metadata:
+      labels:
+        app: app-two
+    spec:
+      containers:
+        - name: app-two-container
+          image: python:3.9-slim
+          command: ["python", "-m", "http.server", "80"]
+          workingDir: /app
+          volumeMounts:
+            - name: html-volume
+              mountPath: /app
+      volumes:
+        - name: html-volume
+          configMap:
+            name: app-two-html
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-two-service
+spec:
+  selector:
+    app: app-two
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
