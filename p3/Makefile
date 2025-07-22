@@ -65,3 +65,8 @@ stop-forward-app:
 	else \
 		echo "No running forward found"; \
 	fi
+
+clean: argo-stop-forward stop-forward-app
+	@echo "[INFO] Cleaning up..."
+	@rm -f $(PORT_FORWARD_PID) .forward-app.pid
+	@echo "[INFO] Cleanup complete."
