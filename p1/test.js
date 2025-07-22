@@ -1,1 +1,0 @@
-let toto = 12 as number
