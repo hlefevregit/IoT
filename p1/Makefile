@@ -20,15 +20,19 @@ destroy:
 
 ## Accès SSH au serveur
 ssh-server:
+	sudo chown -R $(whoami):$(whoami) .
 	$(VAGRANT_CMD) ssh mutezaS
 
+ssh-worker:
+	sudo chown -R $(whoami):$(whoami) .
+	$(VAGRANT_CMD) ssh hulefevrSW
 ##
 
 p1-prune:
 # Nettoyer les VMs et les ressources associées
 	$(VAGRANT_CMD) halt
-	# sudo virsh destroy p1_mutezaS          
-	# sudo virsh destroy p1_hulefevrSW
+	#  sudo virsh destroy p1_mutezaS
+	#  sudo virsh destroy p1_hulefevrSW
 	sudo virsh undefine p1_mutezaS --remove-all-storage
 	sudo virsh undefine p1_hulefevrSW --remove-all-storage
 	rm -rf .vagrant
