@@ -4,15 +4,35 @@ metadata:
   name: app-three-html
 data:
   index.html: |
-    <html>
+    <html lang="en">
       <head>
-        <title>App Three</title>
+        <meta charset="UTF-8" />
+        <title>App 3</title>
+        <style>
+          body {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+          }
+          h1 {
+            color: #17a2b8;
+            font-size: 3rem;
+          }
+          p {
+            font-size: 1.2rem;
+          }
+        </style>
       </head>
       <body>
-        <h1>Welcome to App Three</h1>
-        <p>This is a simple web application running on Kubernetes.</p>
+        <h1>Bienvenue sur App 3</h1>
+        <p>Application par défaut</p>
       </body>
-    </html>
+      </html>
 ---
 apiVersion: apps/v1
 kind: Deployment
