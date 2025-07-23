@@ -1,0 +1,67 @@
+global:
+  hosts:
+    domain: localhost
+    gitlab:
+      name: gitlab.localhost
+      https: true
+  ingress:
+    configureCertmanager: false
+    tls:
+      enabled: true
+      secretName: gitlab-tls
+
+nginx-ingress:
+  enabled: true
+  controller:
+    service:
+      type: NodePort
+      nodePorts:
+        http: 30080
+        https: 30443
+        
+certmanager:
+  install: false
+
+
+prometheus:
+  install: false
+
+gitlab-runner:
+  install: false
+
+# Disable monitoring components
+grafana:
+  enabled: false
+
+# Disable mail
+smtp:
+  enabled: false
+
+# Reduce resource requests/limits
+resources:
+  requests:
+    cpu: 50m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+
+# Optional: disable other unused charts (MinIO, registry, etc.)
+registry:
+  enabled: false
+
+
+
+postgresql:
+  resources:
+    requests:
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+redis:
+  resources:
+    requests:
+      memory: 256Mi
+    limits:
+      memory: 512Mi

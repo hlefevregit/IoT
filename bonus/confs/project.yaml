@@ -1,0 +1,11 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: development-gitlab
+spec:
+  description: Projet GitLab auto déployé
+  sourceRepos:
+    - http://HOST_IP:9999/*
+  destinations:
+    - namespace: gitlab
+      server: https://kubernetes.default.svc

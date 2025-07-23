@@ -1,0 +1,42 @@
+
+CPUS    = 4
+MEMORY  = 4096
+BOX     = "debian/bookworm64"
+IP_ADDR = "192.168.42.99"
+
+Vagrant.configure("2") do |config|
+  config.vm.box = BOX
+  config.vm.provider "virtualbox" do |vb|
+    vb.cpus   = CPUS
+    vb.memory = MEMORY
+  end
+
+  config.vm.define "glab" do |glab|
+    glab.vm.hostname = "glab"
+    glab.vm.network "private_network", ip: IP_ADDR
+    glab.vm.network "forwarded_port", guest: 9999, host: 9999, protocol: "tcp"
+    glab.vm.synced_folder "./data/gitlab", "/var/opt/gitlab", type: "rsync", rsync__auto: true
+
+    glab.vm.provision "shell", inline: <<-SHELL
+      echo "[INFO] ➤ Config locale"
+      sudo apt-get update -qq
+      sudo apt-get install -y locales
+      sudo locale-gen en_US.UTF-8
+      sudo update-locale LANG=en_US.UTF-8
+
+      echo "[INFO] ➤ Dépendances GitLab"
+      sudo apt-get install -y curl openssh-server ca-certificates tzdata perl gnupg
+
+      echo "[INFO] ➤ Installation GitLab"
+      curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
+      sudo apt-get install -y gitlab-ce
+
+      echo "[INFO] ➤ Config GitLab"
+      echo "external_url 'http://#{IP_ADDR}'" | sudo tee /etc/gitlab/gitlab.rb > /dev/null
+      sudo gitlab-ctl reconfigure
+
+      echo "[INFO] ➤ Mot de passe root GitLab"
+      sudo cat /etc/gitlab/initial_root_password || echo "Non trouvé."
+    SHELL
+  end
+end
