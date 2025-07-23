@@ -35,7 +35,7 @@ delete:
 
 restart: delete apply
 
-clean:
+clean: delete
 	@echo "Cleaning everything..."
 	vagrant destroy -f
 	rm -rf .vagrant

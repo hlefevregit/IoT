@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant/config":{"type":"rsync","guestpath":"/vagrant/config","hostpath":"/home/muteza/IOT/p2/config","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
