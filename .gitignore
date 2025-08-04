@@ -1,0 +1,5 @@
+./bonus/config/*
+./bonus/data/*
+./bonus/gitlab/*
+./bonus/logs/*
+./bonus/manifests/*

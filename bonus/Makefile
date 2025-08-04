@@ -36,6 +36,7 @@ help:
 	@echo "  make app-create       → Crée l'app ArgoCD"
 	@echo "  make app-sync         → Synchronise l'app"
 	@echo "  make clean            → Supprime tout proprement"
+	@echo "  make check-tools      → Vérifie les outils nécessaires"
 
 check-tools:
 	@command -v helm >/dev/null 2>&1 || { echo >&2 "Helm is not installed. Aborting."; exit 1; }
@@ -142,3 +143,19 @@ clean: argo-stop-forward stop-forward-app
 	k3d cluster delete $(CLUSTER_NAME)
 	@rm -f $(PORT_FORWARD_PID) .forward-app.pid
 	@echo "[INFO] Cleanup complete."
+
+
+##############################################################################################################################
+# Pour avoir un nouveau mot de passe GitLab, il faut le changer manuellement dans l'interface de GitLab.
+#Voici les commandes pour réinitialiser le mot de passe GitLab :
+
+
+# docker exec -it bonus_gitlab_1 bash 
+# gitlab-rails 
+# user = User.find_by(username: 'root') 
+# user.password='$(GIT_PASS)'
+# user.password_confirmation='$(GIT_PASS)'
+# user.save!"
+# exit
+
+###############################################################################################################################
