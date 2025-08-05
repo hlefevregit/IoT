@@ -3,10 +3,10 @@ services:
     gitlab:
       image: gitlab/gitlab-ee:latest
       ports:
-        - "31080:80"
+        - "30080:80"
       environment:
         GITLAB_OMNIBUS_CONFIG: |
-          external_url 'http://localhost:31080'
+          external_url 'http://localhost:30080'
       volumes:
         - ./config:/etc/gitlab
         - ./logs:/var/log/gitlab

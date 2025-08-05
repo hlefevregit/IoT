@@ -1,7 +1,7 @@
 # Configuration
 CLUSTER_NAME = dev-cluster
 PORT_MAPPING = 8888:80@loadbalancer
-GITLAB_PORT = 31080
+GITLAB_PORT = 30080
 ARGOCD_PORT = 8081
 PORT_FORWARD_PID = .argocd_port_forward.pid
 GITLAB_HOST = http://172.18.0.5
@@ -12,7 +12,7 @@ APP_NAME = my-k8s-app
 # GitLab repo (remplacer les valeurs si besoin)
 GIT_REPO_URL = $(GITLAB_HOST)/hulefevr-group/iot-hulefevr.git
 GIT_USER = root 
-GIT_PASS ?= monNouveauMotDePasse # Recommandé : injecter depuis ENV
+GIT_PASS ?= myNewPassword # Recommandé : injecter depuis ENV
 
 .PHONY: all help create delete restart info \
         gitlab-up \
@@ -20,24 +20,25 @@ GIT_PASS ?= monNouveauMotDePasse # Recommandé : injecter depuis ENV
         argocd-login argocd-repo-add app-create app-sync \
         forward-app-bg stop-forward-app clean check-tools
 
-all: check-tools create gitlab-up install-argocd argo-port-forward argocd-login argocd-repo-add app-create app-sync forward-app-bg
 
 help:
 	@echo "Available targets:"
-	@echo "  make create           → Créer le cluster K3D"
-	@echo "  make delete           → Supprimer le cluster K3D"
-	@echo "  make restart          → Recrée proprement le cluster"
-	@echo "  make gitlab-up        → Démarre GitLab local via docker-compose"
-	@echo "  make install-argocd   → Installe Argo CD"
-	@echo "  make argo-port-forward→ Forward ArgoCD vers localhost:8081"
-	@echo "  make argo-password    → Affiche le mot de passe admin ArgoCD"
-	@echo "  make argocd-login     → Se connecte à ArgoCD via CLI"
-	@echo "  make argocd-repo-add  → Ajoute le repo GitLab à ArgoCD"
-	@echo "  make app-create       → Crée l'app ArgoCD"
-	@echo "  make app-sync         → Synchronise l'app"
-	@echo "  make clean            → Supprime tout proprement"
-	@echo "  make check-tools      → Vérifie les outils nécessaires"
+	@echo "  make create           	→ Créer le cluster K3D"
+	@echo "  make delete           	→ Supprimer le cluster K3D"
+	@echo "  make restart          	→ Recrée proprement le cluster"
+	@echo "  make gitlab-up        	→ Démarre GitLab local via docker-compose"
+	@echo "  make install-argocd   	→ Installe Argo CD"
+	@echo "  make argo-port-forward	→ Forward ArgoCD vers localhost:8081"
+	@echo "  make argo-password    	→ Affiche le mot de passe admin ArgoCD"
+	@echo "  make argocd-login     	→ Se connecte à ArgoCD via CLI"
+	@echo "  make link-network     	→ Connecte le container GitLab au réseau K3D"
+	@echo "  make argocd-repo-add  	→ Ajoute le repo GitLab à ArgoCD"
+	@echo "  make app-create       	→ Crée l'app ArgoCD"
+	@echo "  make app-sync         	→ Synchronise l'app"
+	@echo "  make clean            	→ Supprime tout proprement"
+	@echo "  make check-tools      	→ Vérifie les outils nécessaires"
 
+all: check-tools create gitlab-up install-argocd argo-port-forward argocd-login argocd-repo-add app-create app-sync forward-app-bg
 check-tools:
 	@command -v helm >/dev/null 2>&1 || { echo >&2 "Helm is not installed. Aborting."; exit 1; }
 	@command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl is not installed. Aborting."; exit 1; }
@@ -132,7 +133,9 @@ stop-forward-app:
 	fi
 
 
-
+link-network:
+	@echo "[INFO] Linking GitLab container to K3D network..."
+	docker network connect k3d-$(CLUSTER_NAME) bonus_gitlab_1 || true
 
 clean: argo-stop-forward stop-forward-app
 	@echo "[INFO] Cleaning up..."
@@ -151,11 +154,14 @@ clean: argo-stop-forward stop-forward-app
 
 
 # docker exec -it bonus_gitlab_1 bash 
-# gitlab-rails 
+# gitlab-rails c
 # user = User.find_by(username: 'root') 
 # user.password='$(GIT_PASS)'
 # user.password_confirmation='$(GIT_PASS)'
 # user.save!"
 # exit
+
+# docker inspect bonus_gitlab_1 | jq '.[0].NetworkSettings.Networks'
+#docker network connect k3d-dev-cluster bonus_gitlab_1
 
 ###############################################################################################################################
