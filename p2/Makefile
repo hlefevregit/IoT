@@ -9,7 +9,12 @@ h:
 	@echo "  delete:    Delete all Kubernetes resources"
 	@echo "  restart:   Delete + re-apply all"
 	@echo "  clean:     Destroy VMs + cleanup"
+	@echo "  info:      Show all (Pods, Service, Apps and Replicat)"
 	@echo "  h:         Show this help message"
+
+info:
+	@echo "Here is all infos :"
+	vagrant ssh hulefevrS -c "k3s kubectl get all"
 
 up:
 	@echo "Starting Vagrant machine..." 
